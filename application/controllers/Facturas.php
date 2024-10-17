@@ -85,11 +85,9 @@ class Facturas extends CI_Controller {
         $obj->intConNoGrv="";
         $obj->intImpExto="";
         $obj->intPerStaFe="";
-
+        $obj->intItc="";
         $obj->obs="";
-        $obj->items="[]";
-        
-        
+        $obj->items="[]";       
         $data["factura"]=$obj;
         $data["lista_proveedores"]=$this->facturas_model->lista_proveedores();
         $data["lista_empresas"]=$this->facturas_model->lista_empresas();       
@@ -125,6 +123,7 @@ class Facturas extends CI_Controller {
         $obj->intConNoGrv=trim($this->input->post('intConNoGrv'));
         $obj->intTotal=trim($this->input->post('intTotal'));
         $obj->obs=trim($this->input->post('obs'));
+        $obj->intItc=trim($this->input->post('intItc'));
         $obj->items=trim($this->input->post('items'));
         
         //Valido numeracion
@@ -182,10 +181,12 @@ class Facturas extends CI_Controller {
         if(!(is_numeric($obj->intPerStaFe))){$error->intPerStaFe="Debe ser un número";$falla=true;}
         if(!(is_numeric($obj->intImpExto))){$error->intImpExto="Debe ser un número";$falla=true;}
         if(!(is_numeric($obj->intConNoGrv))){$error->intConNoGrv="Debe ser un número";$falla=true;}
+        if(!(is_numeric($obj->intItc))){$error->intItc="Debe ser un número";$falla=true;}
         if($obj->items=='[]'){$error->intItems="La Factura debe Contener Algun item Para Calcular Totales";$falla=true;}      
         if(!$falla){
             $resultado=$this->facturas_model->guardar($obj);
-            if ($resultado["estado"]=="0"){
+           /* if ($resultado["estado"]=="0"){
+            
                 $falla=false;
             }else{
                 $data["mensaje"]='<div class="alert alert-warning alert-dismissible" role="alert">'.
@@ -194,9 +195,11 @@ class Facturas extends CI_Controller {
                     $resultado["mensaje"].
                     '</div>';
             }
+            */
         }
         
         if($falla){
+            $obj->periva=$prM.'/'.$prA;
             $data["factura"]=$obj;
             $data["error"]=$error;
             $data["lista_proveedores"]=$this->facturas_model->lista_proveedores();

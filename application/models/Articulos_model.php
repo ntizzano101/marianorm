@@ -75,7 +75,7 @@ class Articulos_model extends CI_Model {
                 " WHERE ( UPPER(a.articulo) LIKE ? ".  
                     " OR UPPER(b.razon_soc) LIKE ?".
                     " OR UPPER(c.rubro) LIKE ?".
-                    " OR UPPER(d.categoria) LIKE ?)";
+                    " OR UPPER(d.categoria) LIKE ?) order by a.articulo limit 80";
             $retorno=$this->db->query($sql, array($b,$b,$b,$b))->result();
             if((is_array($retorno))){
                 return $retorno;
@@ -171,7 +171,7 @@ class Articulos_model extends CI_Model {
     public function rubro_listado($b)
         {
             $b="%".trim(strtoupper($b))."%";
-            $sql="SELECT * FROM rubros WHERE UPPER(rubro) LIKE ? ";
+            $sql="SELECT * FROM rubros WHERE UPPER(rubro) LIKE ? order by rubro";
             $retorno=$this->db->query($sql, array($b))->result();
             if((is_array($retorno))){
                 return $retorno;
@@ -237,7 +237,7 @@ class Articulos_model extends CI_Model {
     public function categoria_listado($b)
         {
             $b="%".trim(strtoupper($b))."%";
-            $sql="SELECT * FROM categorias WHERE UPPER(categoria) LIKE ? ";
+            $sql="SELECT * FROM categorias WHERE UPPER(categoria) LIKE ? order by categoria";
             $retorno=$this->db->query($sql, array($b))->result();
             if((is_array($retorno))){
                 return $retorno;

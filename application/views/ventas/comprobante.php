@@ -1,7 +1,7 @@
 <?php
-if($venta->cae==''){
+/*if($venta->cae==''){
 	die("<h3>Comprobante sin CAE no se puede Visualizar<hr>".$venta->cae_resultado."</h3>");
-}
+}*/
 function fechaDBtoHtml($t){
 	list($ano,$mes,$dia)=explode("-",$t);
 	if($ano+$mes+$dia==0)
@@ -47,14 +47,16 @@ font-size:small;
 	</td>		
 	<td width="45%" align="right" valign="top">
 	<?=$venta->nombre_c?>:<?php printf("%05d-%08d",$venta->puerto,$venta->numero) ?><br>
-	    FECHA FACTURA  :<?=fechaDBtoHtml($venta->fecha) ?> <br>
+	    FECHA   :<?=fechaDBtoHtml($venta->fecha) ?> <br>
 		<?php
 		if($venta->codigo_comp=='201'){ echo "VENCE:". fechaDBtoHtml($venta->vence) . "<br>";}		
 		?>
+		<?php if(in_array($venta->letra,array("A","B","C"))) { ?>	
 		CUIT :<?=$empresa->cuit?><br>
 		IIBB :<?=$empresa->nro_iibb?><br>
 		SERVICIO DESDE : <?=fechaDBtoHtml($venta->serv_desde) ?><br> 
 		SERVICIO HASTA : <?=fechaDBtoHtml($venta->serv_hasta) ?><br>
+		<?php } ?>	
 		<?php
 		if($venta->codigo_comp=='201'){ echo "CBU:". $venta->cbu . "<br>";}		
 		?>
@@ -90,8 +92,7 @@ font-size:small;
 			<td  style="border:1px solid #000" >Cant.</td>	
 			<td  style="border:1px solid #000" colspan="4">Descripcion</td>	
 		<?php }  ?>
-		<?php if($venta->cae=="" or $venta->cae=="MIGRACION" ){echo "<tr><td colspan=5><h1>Comprobante de migarcion no Valido</h1></td></tr>";} ?>			
-		<?php if($venta->cae=="" or $venta->cae=="MANUAL" ){echo "<tr><td colspan=5><h1>NO VALIDO COMO FACTURA,ES UNA COPIA</h1></td></tr>";} ?>			
+		
 		<?php foreach ($items as $it) { 
 			if($venta->letra!='R') {?>
 			<tr>		
@@ -108,9 +109,16 @@ font-size:small;
 				?>
 				<td colspan="2" ><?php echo $it->articulo ?></td>
 				<?php } ?>
+				<?php if(($cliente->iva==1 or $cliente->iva==6) and ($venta->letra=='A' or $venta->letra=='P')) {?>
 				<td align="right"><?php echo $it->precio ?></td>
 				<td align="right"><?php 
 								printf("%.2f",$it->precio *  $it->cantidad)?></td>			
+				<?php } 
+				else { ?>
+				<td align="right"><?php printf("%.2f", $it->precio * $it->iva/100 + $it->precio) ?></td>
+				<td align="right"><?php 
+								printf("%.2f",($it->precio * $it->iva/100 + $it->precio)* $it->cantidad) ?></td>			
+				<?php } ?>				
 			</tr>
 		<?php } else { ?>
 			<tr>		

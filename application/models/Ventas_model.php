@@ -362,7 +362,8 @@ class Ventas_model extends CI_Model {
                 $a=$rta->result();
                 $ultimo1=$a[0]->ultimo;
                 $ultimo1=$ultimo1+1;            
-                }  
+                } 
+            else{$ultimo1=$ultimo1+1;}     
             $manual="";    
             if($a[0]->tipo=='M' and in_array($a[0]->letra,array('A','B','C'))){$manual=" cae= 'MANUAL',";}
             $this->db->query("UPDATE facturas set ".$manual." numero=".$ultimo1." where id_factura=".$last_id);        
